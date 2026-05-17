@@ -563,11 +563,8 @@ export default function Home() {
                   { feat: 'Criptografia Zero-Knowledge',    z: true, g: false,     d: false     },
                   { feat: 'Log de Auditoria LGPD',          z: true, g: false,     d: false     },
                   { feat: 'Relatório ANPD em 1 clique',     z: true, g: false,     d: false     },
-                  { feat: 'Classificação IA (CPF, RG…)',    z: true, g: false,     d: false     },
-                  { feat: 'Bloqueio anti-ransomware',       z: true, g: false,     d: false     },
                   { feat: 'RBAC (Admin/Colab/Viewer)',      z: true, g: 'parcial', d: 'parcial' },
                   { feat: 'Armazenamento na nuvem',         z: true, g: true,      d: true      },
-                  { feat: 'Funciona offline',               z: true, g: 'parcial', d: 'parcial' },
                 ].map(row => (
                   <tr key={row.feat} style={{ borderBottom: `1px solid ${c.border}` }}>
                     <td style={{ padding: '10px 16px', fontSize: 13, color: c.textSub }}>{row.feat}</td>

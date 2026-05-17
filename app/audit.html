@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zênite — Auditoria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('z-theme')||'dark')</script>
+  <style>
+    .audit-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .audit-mini {
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .audit-mini-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .audit-mini-val { font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+    .audit-mini-lbl { font-size: 11px; color: var(--gray-400); }
+
+    .anpd-btn {
+      background: linear-gradient(135deg, rgba(39,194,129,.2), rgba(79,209,197,.1));
+      border: 1px solid rgba(39,194,129,.3);
+      color: var(--green);
+      padding: 8px 16px;
+      border-radius: var(--r-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all var(--t-fast);
+    }
+    .anpd-btn:hover {
+      background: linear-gradient(135deg, rgba(39,194,129,.3), rgba(79,209,197,.15));
+    }
+
+    .log-row td:first-child { color: var(--gray-600); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+    .action-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--r-sm);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .user-cell { display: flex; align-items: center; gap: 8px; }
+    .mini-avatar {
+      width: 24px; height: 24px;
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .resource-cell { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
+    .resource-cell i { color: var(--gray-400); }
+    .status-ok { display: flex; align-items: center; gap: 5px; color: var(--green); font-size: 12px; font-weight: 600; }
+    .status-block { display: flex; align-items: center; gap: 5px; color: var(--red); font-size: 12px; font-weight: 600; }
+    .status-warn { display: flex; align-items: center; gap: 5px; color: var(--yellow); font-size: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="Frame 1.svg" alt="Zênite" style="width:28px;height:28px;display:block;flex-shrink:0">
+      <span class="logo-text">Zênite<span class="logo-tld">.cloud</span></span>
+    </div>
+    <nav>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Principal</div>
+        <a href="index.html" class="nav-item"><svg class="icon"><use href="#ph-squares-four"></use></svg> Dashboard</a>
+        <a href="vault.html" class="nav-item"><svg class="icon"><use href="#ph-vault"></use></svg> Cofre Digital</a>
+        <a href="audit.html" class="nav-item active"><svg class="icon"><use href="#ph-clipboard-text"></use></svg> Auditoria <span class="nav-badge">12</span></a>
+        <a href="access.html" class="nav-item"><svg class="icon"><use href="#ph-users-three"></use></svg> Acessos</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Conformidade</div>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-shield-check"></use></svg> LGPD</a>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-chart-bar"></use></svg> Relatórios</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Sistema</div>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-bell"></use></svg> Alertas <span class="nav-badge">3</span></a>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-gear"></use></svg> Configurações</a>
+      </div>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-storage">
+      <div class="storage-row"><span>Armazenamento</span><span>2,4 GB / 10 GB</span></div>
+      <div class="storage-track"><div class="storage-fill" style="width:24%"></div></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" style="background:var(--blue-600)">IY</div>
+      <div class="user-info">
+        <div class="user-name">Inne Yara</div>
+        <div class="user-role">Administradora</div>
+      </div>
+      <svg class="icon" style="color:var(--gray-600);font-size:18px"><use href="#ph-dots-three"></use></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="topbar">
+      <span class="topbar-title">Log de Auditoria</span>
+      <div class="topbar-spacer"></div>
+      <div class="search-bar">
+        <svg class="icon"><use href="#ph-magnifying-glass"></use></svg>
+        <input type="text" placeholder="Buscar no log…">
+      </div>
+      <div class="anpd-btn">
+        <svg class="icon"><use href="#ph-file-arrow-down"></use></svg> Exportar Relatório ANPD
+      </div>
+      <div class="topbar-btn" onclick="__toggleTheme()" title="Alternar tema" style="cursor:pointer">
+        <svg class="icon theme-icon"><use href="#ph-sun"></use></svg>
+      </div>
+      <div class="topbar-btn"><svg class="icon"><use href="#ph-bell"></use></svg><div class="notif-dot"></div></div>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <div class="page-title">Trilha de Auditoria</div>
+        <div class="page-subtitle">Registro imutável de todas as ações · Prova de conformidade LGPD em um clique</div>
+      </div>
+
+      <!-- Audit stats -->
+      <div class="audit-stats">
+        <div class="audit-mini">
+          <div class="audit-mini-icon" style="background:rgba(47,128,237,.15);color:var(--blue-500)">
+            <svg class="icon"><use href="#ph-activity"></use></svg>
+          </div>
+          <div>
+            <div class="audit-mini-val">2.841</div>
+            <div class="audit-mini-lbl">Eventos hoje</div>
+          </div>
+        </div>
+        <div class="audit-mini">
+          <div class="audit-mini-icon" style="background:rgba(255,90,95,.15);color:var(--red)">
+            <svg class="icon"><use href="#ph-prohibit"></use></svg>
+          </div>
+          <div>
+            <div class="audit-mini-val">18</div>
+            <div class="audit-mini-lbl">Bloqueios hoje</div>
+          </div>
+        </div>
+        <div class="audit-mini">
+          <div class="audit-mini-icon" style="background:rgba(255,200,87,.15);color:var(--yellow)">
+            <svg class="icon"><use href="#ph-warning-circle"></use></svg>
+          </div>
+          <div>
+            <div class="audit-mini-val">3</div>
+            <div class="audit-mini-lbl">Alertas ativos</div>
+          </div>
+        </div>
+        <div class="audit-mini">
+          <div class="audit-mini-icon" style="background:rgba(39,194,129,.15);color:var(--green)">
+            <svg class="icon"><use href="#ph-calendar-check"></use></svg>
+          </div>
+          <div>
+            <div class="audit-mini-val">98,7%</div>
+            <div class="audit-mini-lbl">Uptime registros</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-chip active"><svg class="icon"><use href="#ph-funnel-simple"></use></svg> Todos</div>
+        <div class="filter-chip"><svg class="icon"><use href="#ph-download-simple"></use></svg> Downloads</div>
+        <div class="filter-chip"><svg class="icon"><use href="#ph-upload-simple"></use></svg> Uploads</div>
+        <div class="filter-chip"><svg class="icon"><use href="#ph-prohibit"></use></svg> Bloqueios</div>
+        <div class="filter-chip"><svg class="icon"><use href="#ph-user-switch"></use></svg> Logins</div>
+        <div class="filter-chip"><svg class="icon"><use href="#ph-trash"></use></svg> Exclusões</div>
+        <div class="filter-chip"><svg class="icon"><use href="#ph-robot"></use></svg> IA</div>
+
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <div class="filter-chip">
+            <svg class="icon"><use href="#ph-calendar-blank"></use></svg> 16/05/2026
+          </div>
+          <div class="filter-chip">
+            <svg class="icon"><use href="#ph-user"></use></svg> Todos usuários
+          </div>
+        </div>
+      </div>
+
+      <!-- Log Table -->
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Usuário</th>
+                <th>Ação</th>
+                <th>Recurso</th>
+                <th>Origem</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr class="log-row">
+                <td>16/05/2026 14:32:07</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:var(--blue-600)">RD</div>
+                    Rodrigo Dal Piva
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(39,194,129,.12);color:var(--green)"><svg class="icon"><use href="#ph-download-simple"></use></svg> Download</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-file-pdf"></use></svg> Contrato_Cliente_004.pdf</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-desktop"></use></svg> App Desktop</div></td>
+                <td><div class="status-ok"><div class="dot dot-green"></div> Autorizado</div></td>
+                <td><div class="action-btn"><svg class="icon"><use href="#ph-info"></use></svg></div></td>
+              </tr>
+
+              <tr class="log-row">
+                <td>16/05/2026 13:11:44</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:rgba(255,90,95,.3);color:var(--red)">??</div>
+                    <span style="color:var(--gray-400);font-style:italic">Desconhecido</span>
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(255,90,95,.12);color:var(--red)"><svg class="icon"><use href="#ph-lock"></use></svg> Login</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-globe"></use></svg> 177.42.88.12</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-globe"></use></svg> Web · 127 tentativas</div></td>
+                <td><div class="status-block"><div class="dot dot-red"></div> Bloqueado</div></td>
+                <td><div class="action-btn" style="border-color:rgba(255,90,95,.2)"><svg class="icon"><use href="#ph-warning"></use></svg></div></td>
+              </tr>
+
+              <tr class="log-row">
+                <td>16/05/2026 11:04:12</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:var(--blue-600)">IY</div>
+                    Inne Yara
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(47,128,237,.12);color:var(--blue-500)"><svg class="icon"><use href="#ph-upload-simple"></use></svg> Upload</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-file-pdf"></use></svg> Apólice_2026_Q2.pdf</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-desktop"></use></svg> App Desktop</div></td>
+                <td><div class="status-ok"><div class="dot dot-green"></div> Autorizado</div></td>
+                <td><div class="action-btn"><svg class="icon"><use href="#ph-info"></use></svg></div></td>
+              </tr>
+
+              <tr class="log-row">
+                <td>16/05/2026 09:45:33</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:var(--blue-600)">IY</div>
+                    Inne Yara
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(79,209,197,.12);color:var(--cyan)"><svg class="icon"><use href="#ph-user-plus"></use></svg> Adicionou usuário</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-user"></use></svg> Lucas Nylan → Colaborador</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-globe"></use></svg> Painel Web</div></td>
+                <td><div class="status-ok"><div class="dot dot-green"></div> Autorizado</div></td>
+                <td><div class="action-btn"><svg class="icon"><use href="#ph-info"></use></svg></div></td>
+              </tr>
+
+              <tr class="log-row">
+                <td>16/05/2026 08:20:55</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:var(--blue-700)">IA</div>
+                    <span style="color:var(--cyan)">Zênite IA</span>
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(255,200,87,.12);color:var(--yellow)"><svg class="icon"><use href="#ph-robot"></use></svg> Varredura IA</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-file-xls"></use></svg> Planilha_Clientes_Mai.xlsx</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-cpu"></use></svg> Sistema</div></td>
+                <td><div class="status-warn"><div class="dot dot-yellow"></div> Alerta gerado</div></td>
+                <td><div class="action-btn" style="border-color:rgba(255,200,87,.2)"><svg class="icon"><use href="#ph-warning"></use></svg></div></td>
+              </tr>
+
+              <tr class="log-row">
+                <td>15/05/2026 18:47:02</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:#1A6B5A">LN</div>
+                    Lucas Nylan
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(47,128,237,.12);color:var(--blue-500)"><svg class="icon"><use href="#ph-sign-in"></use></svg> Login</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-globe"></use></svg> app.zenite.cloud</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-globe"></use></svg> Web · Chrome</div></td>
+                <td><div class="status-ok"><div class="dot dot-green"></div> Autorizado</div></td>
+                <td><div class="action-btn"><svg class="icon"><use href="#ph-info"></use></svg></div></td>
+              </tr>
+
+              <tr class="log-row">
+                <td>15/05/2026 17:30:18</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:var(--blue-600)">RD</div>
+                    Rodrigo Dal Piva
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(255,200,87,.12);color:var(--yellow)"><svg class="icon"><use href="#ph-files"></use></svg> Download em Massa</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-folder-open"></use></svg> /Jurídico — 43 arquivos</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-desktop"></use></svg> App Desktop</div></td>
+                <td><div class="status-warn"><div class="dot dot-yellow"></div> Revisado</div></td>
+                <td><div class="action-btn" style="border-color:rgba(255,200,87,.2)"><svg class="icon"><use href="#ph-warning"></use></svg></div></td>
+              </tr>
+
+              <tr class="log-row">
+                <td>15/05/2026 14:12:44</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:var(--blue-600)">IY</div>
+                    Inne Yara
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(255,90,95,.12);color:var(--red)"><svg class="icon"><use href="#ph-trash"></use></svg> Exclusão</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-file-pdf"></use></svg> Curriculo_Candidato_2024.pdf</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-globe"></use></svg> Painel Web</div></td>
+                <td><div class="status-ok"><div class="dot dot-green"></div> Autorizado</div></td>
+                <td><div class="action-btn"><svg class="icon"><use href="#ph-info"></use></svg></div></td>
+              </tr>
+
+              <tr class="log-row">
+                <td>15/05/2026 09:00:01</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:var(--blue-700)">IA</div>
+                    <span style="color:var(--cyan)">Zênite IA</span>
+                  </div>
+                </td>
+                <td><span class="action-badge" style="background:rgba(39,194,129,.12);color:var(--green)"><svg class="icon"><use href="#ph-arrow-counter-clockwise"></use></svg> Backup</span></td>
+                <td><div class="resource-cell"><svg class="icon"><use href="#ph-hard-drive"></use></svg> Backup automático · 1.247 arquivos</div></td>
+                <td><div class="resource-cell text-muted text-sm"><svg class="icon"><use href="#ph-cpu"></use></svg> Sistema</div></td>
+                <td><div class="status-ok"><div class="dot dot-green"></div> Concluído</div></td>
+                <td><div class="action-btn"><svg class="icon"><use href="#ph-info"></use></svg></div></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid var(--border-subtle)">
+          <span class="text-xs text-muted">Mostrando 9 de 2.841 eventos</span>
+          <div class="inline-flex" style="gap:4px">
+            <div class="filter-chip"><svg class="icon"><use href="#ph-caret-left"></use></svg></div>
+            <div class="filter-chip active">1</div>
+            <div class="filter-chip">2</div>
+            <div class="filter-chip">3</div>
+            <span class="text-muted text-xs" style="padding:0 4px">…</span>
+            <div class="filter-chip">316</div>
+            <div class="filter-chip"><svg class="icon"><use href="#ph-caret-right"></use></svg></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      const isToggle = this.closest('.filter-bar');
+      if (isToggle && !this.querySelector('.ph-caret-left') && !this.querySelector('.ph-caret-right')) {
+        document.querySelectorAll('.filter-bar .filter-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      }
+    });
+  });
+</script>
+</body>
+</html>

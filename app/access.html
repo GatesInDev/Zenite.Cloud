@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zênite — Gestão de Acessos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('z-theme')||'dark')</script>
+  <style>
+    .access-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 16px;
+    }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: var(--r-sm);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .role-admin {
+      background: linear-gradient(135deg, rgba(47,128,237,.2), rgba(123,97,255,.15));
+      color: #a78bfa;
+      border: 1px solid rgba(123,97,255,.2);
+    }
+    .role-colab {
+      background: rgba(47,128,237,.12);
+      color: var(--blue-400);
+      border: 1px solid rgba(47,128,237,.2);
+    }
+    .role-viewer {
+      background: rgba(255,255,255,.06);
+      color: var(--gray-400);
+      border: 1px solid var(--border);
+    }
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: var(--r-md);
+      border: 1px solid var(--border);
+      background: var(--bg-glass);
+      margin-bottom: 8px;
+      transition: all var(--t-fast);
+    }
+    .user-card:hover { border-color: rgba(255,255,255,.12); background: var(--bg-glass-hover); }
+    .user-card-avatar {
+      width: 34px; height: 34px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .user-card-info { flex: 1; min-width: 0; }
+    .user-card-name { font-size: 13px; font-weight: 600; color: var(--white); }
+    .user-card-email { font-size: 11.5px; color: var(--gray-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-card-actions { display: flex; gap: 6px; align-items: center; }
+    .online-dot { width: 6px; height: 6px; border-radius: 1px; background: var(--green); }
+    .offline-dot { width: 6px; height: 6px; border-radius: 1px; background: var(--gray-600); }
+
+    .perm-section { margin-bottom: 20px; }
+    .perm-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-600);
+      margin-bottom: 10px;
+    }
+    .perm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .perm-row:last-child { border-bottom: none; }
+    .perm-label { font-size: 13px; color: var(--gray-100); }
+    .perm-sub { font-size: 11px; color: var(--gray-600); margin-top: 1px; }
+
+    .toggle {
+      width: 36px; height: 20px;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      transition: all var(--t-fast);
+    }
+    .toggle.on { background: var(--green); }
+    .toggle.off { background: var(--gray-600); }
+    .toggle-thumb {
+      width: 14px; height: 14px;
+      border-radius: 2px;
+      background: white;
+      position: absolute;
+      top: 3px;
+      transition: all var(--t-fast);
+    }
+    .toggle.on .toggle-thumb { left: 19px; }
+    .toggle.off .toggle-thumb { left: 3px; }
+
+    .invite-card {
+      background: linear-gradient(135deg, rgba(47,128,237,.12), rgba(79,209,197,.06));
+      border: 1px dashed rgba(47,128,237,.3);
+      border-radius: var(--r-md);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--t-fast);
+      margin-bottom: 16px;
+    }
+    .invite-card:hover {
+      background: linear-gradient(135deg, rgba(47,128,237,.2), rgba(79,209,197,.1));
+      border-color: var(--blue-500);
+    }
+    .invite-card .icon { width: 28px; height: 28px; color: var(--blue-500); margin-bottom: 8px; opacity: .8; }
+    .invite-card p { font-size: 13px; color: var(--gray-400); }
+    .invite-card strong { color: var(--blue-400); }
+
+    .last-login { font-size: 11px; color: var(--gray-600); white-space: nowrap; }
+  </style>
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="Frame 1.svg" alt="Zênite" style="width:28px;height:28px;display:block;flex-shrink:0">
+      <span class="logo-text">Zênite<span class="logo-tld">.cloud</span></span>
+    </div>
+    <nav>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Principal</div>
+        <a href="index.html" class="nav-item"><svg class="icon"><use href="#ph-squares-four"></use></svg> Dashboard</a>
+        <a href="vault.html" class="nav-item"><svg class="icon"><use href="#ph-vault"></use></svg> Cofre Digital</a>
+        <a href="audit.html" class="nav-item"><svg class="icon"><use href="#ph-clipboard-text"></use></svg> Auditoria <span class="nav-badge">12</span></a>
+        <a href="access.html" class="nav-item active"><svg class="icon"><use href="#ph-users-three"></use></svg> Acessos</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Conformidade</div>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-shield-check"></use></svg> LGPD</a>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-chart-bar"></use></svg> Relatórios</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Sistema</div>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-bell"></use></svg> Alertas <span class="nav-badge">3</span></a>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-gear"></use></svg> Configurações</a>
+      </div>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-storage">
+      <div class="storage-row"><span>Armazenamento</span><span>2,4 GB / 10 GB</span></div>
+      <div class="storage-track"><div class="storage-fill" style="width:24%"></div></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" style="background:var(--blue-600)">IY</div>
+      <div class="user-info">
+        <div class="user-name">Inne Yara</div>
+        <div class="user-role">Administradora</div>
+      </div>
+      <svg class="icon" style="color:var(--gray-600);font-size:18px"><use href="#ph-dots-three"></use></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="topbar">
+      <span class="topbar-title">Gestão de Acessos</span>
+      <div class="topbar-spacer"></div>
+      <div class="search-bar">
+        <svg class="icon"><use href="#ph-magnifying-glass"></use></svg>
+        <input type="text" placeholder="Buscar usuário…">
+      </div>
+      <button class="btn btn-primary" style="height:36px;padding:0 14px;font-size:13px">
+        <svg class="icon"><use href="#ph-user-plus"></use></svg> Convidar
+      </button>
+      <div class="topbar-btn" onclick="__toggleTheme()" title="Alternar tema" style="cursor:pointer">
+        <svg class="icon theme-icon"><use href="#ph-sun"></use></svg>
+      </div>
+      <div class="topbar-btn"><svg class="icon"><use href="#ph-bell"></use></svg><div class="notif-dot"></div></div>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <div class="page-title">Usuários &amp; Permissões</div>
+        <div class="page-subtitle">Controle de acesso baseado em funções (RBAC) · 7 usuários ativos</div>
+      </div>
+
+      <div class="access-grid">
+
+        <!-- LEFT: User List -->
+        <div>
+          <!-- Invite Card -->
+          <div class="invite-card">
+            <div><svg class="icon"><use href="#ph-user-plus"></use></svg></div>
+            <p>Convide sua equipe · <strong>Link gerado com expiração automática</strong></p>
+            <p style="font-size:11px;margin-top:4px;color:var(--gray-600)">O acesso é auditado desde o primeiro login</p>
+          </div>
+
+          <!-- Admins -->
+          <div class="section-title">Administradores · 1</div>
+
+          <div class="user-card" style="border-left:3px solid var(--purple)">
+            <div class="user-card-avatar" style="background:var(--blue-700)">IY</div>
+            <div class="user-card-info">
+              <div class="user-card-name">Inne Yara</div>
+              <div class="user-card-email">inneyara@bensseguros.com.br</div>
+            </div>
+            <div class="online-dot" title="Online"></div>
+            <span class="role-badge role-admin"><svg class="icon"><use href="#ph-crown-simple"></use></svg> Admin</span>
+            <div class="user-card-actions">
+              <div class="action-btn"><svg class="icon"><use href="#ph-dots-three-vertical"></use></svg></div>
+            </div>
+          </div>
+
+          <!-- Collaborators -->
+          <div class="section-title" style="margin-top:16px">Colaboradores · 5</div>
+
+          <div class="user-card">
+            <div class="user-card-avatar" style="background:var(--blue-600)">RD</div>
+            <div class="user-card-info">
+              <div class="user-card-name">Rodrigo Dal Piva</div>
+              <div class="user-card-email">rodrigo@dalpivazezak.adv.br</div>
+            </div>
+            <div class="online-dot"></div>
+            <span class="role-badge role-colab"><svg class="icon"><use href="#ph-user-circle"></use></svg> Colaborador</span>
+            <div class="user-card-actions">
+              <div class="action-btn"><svg class="icon"><use href="#ph-dots-three-vertical"></use></svg></div>
+            </div>
+          </div>
+
+          <div class="user-card">
+            <div class="user-card-avatar" style="background:#1A6B5A">LN</div>
+            <div class="user-card-info">
+              <div class="user-card-name">Lucas Nylan</div>
+              <div class="user-card-email">lucas.nylan@clinicamed.com.br</div>
+            </div>
+            <div class="offline-dot" title="Offline"></div>
+            <span class="role-badge role-colab"><svg class="icon"><use href="#ph-user-circle"></use></svg> Colaborador</span>
+            <div class="user-card-actions">
+              <div class="action-btn"><svg class="icon"><use href="#ph-dots-three-vertical"></use></svg></div>
+            </div>
+          </div>
+
+          <div class="user-card">
+            <div class="user-card-avatar" style="background:#8B5E0A">BS</div>
+            <div class="user-card-info">
+              <div class="user-card-name">Bernardo Silva</div>
+              <div class="user-card-email">bernardo@inviolavel.com.br</div>
+            </div>
+            <div class="offline-dot"></div>
+            <span class="role-badge role-colab"><svg class="icon"><use href="#ph-user-circle"></use></svg> Colaborador</span>
+            <div class="user-card-actions">
+              <div class="action-btn"><svg class="icon"><use href="#ph-dots-three-vertical"></use></svg></div>
+            </div>
+          </div>
+
+          <div class="user-card">
+            <div class="user-card-avatar" style="background:#5B3DB8">MA</div>
+            <div class="user-card-info">
+              <div class="user-card-name">Maria Antonia</div>
+              <div class="user-card-email">maria.antonia@bensseguros.com.br</div>
+            </div>
+            <div class="offline-dot"></div>
+            <span class="role-badge role-colab"><svg class="icon"><use href="#ph-user-circle"></use></svg> Colaborador</span>
+            <div class="user-card-actions">
+              <div class="action-btn"><svg class="icon"><use href="#ph-dots-three-vertical"></use></svg></div>
+            </div>
+          </div>
+
+          <div class="user-card">
+            <div class="user-card-avatar" style="background:var(--blue-600)">CA</div>
+            <div class="user-card-info">
+              <div class="user-card-name">Carlos Andrade</div>
+              <div class="user-card-email">carlos@bensseguros.com.br</div>
+            </div>
+            <div class="offline-dot"></div>
+            <span class="role-badge role-colab"><svg class="icon"><use href="#ph-user-circle"></use></svg> Colaborador</span>
+            <div class="user-card-actions">
+              <div class="action-btn"><svg class="icon"><use href="#ph-dots-three-vertical"></use></svg></div>
+            </div>
+          </div>
+
+          <!-- Viewers -->
+          <div class="section-title" style="margin-top:16px">Somente Leitura · 1</div>
+
+          <div class="user-card">
+            <div class="user-card-avatar" style="background:var(--gray-600)">AB</div>
+            <div class="user-card-info">
+              <div class="user-card-name">Auditora Bernardi</div>
+              <div class="user-card-email">auditoria@externo.com.br</div>
+            </div>
+            <div class="offline-dot"></div>
+            <span class="role-badge role-viewer"><svg class="icon"><use href="#ph-eye"></use></svg> Viewer</span>
+            <div class="user-card-actions">
+              <div class="action-btn"><svg class="icon"><use href="#ph-dots-three-vertical"></use></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Role Details + Permissions -->
+        <div>
+
+          <!-- Role Summary Cards -->
+          <div class="card gap-16" style="margin-bottom:16px">
+            <div class="card-head">
+              <span class="card-title">Definição de Funções</span>
+            </div>
+
+            <div style="background:var(--bg-card-2,#112B4A);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:var(--r-md);padding:14px;margin-bottom:8px">
+              <div class="inline-flex" style="margin-bottom:8px">
+                <span class="role-badge role-admin"><svg class="icon"><use href="#ph-crown-simple"></use></svg> Administrador</span>
+              </div>
+              <p class="text-xs text-muted">Acesso total ao sistema. Gerencia usuários, configurações, visualiza todos os logs e exporta relatórios ANPD.</p>
+            </div>
+
+            <div style="background:var(--bg-card-2,#112B4A);border:1px solid var(--border);border-left:3px solid var(--blue-500);border-radius:var(--r-md);padding:14px;margin-bottom:8px">
+              <div class="inline-flex" style="margin-bottom:8px">
+                <span class="role-badge role-colab"><svg class="icon"><use href="#ph-user-circle"></use></svg> Colaborador</span>
+              </div>
+              <p class="text-xs text-muted">Acesso às pastas permitidas pelo Admin. Pode enviar, baixar e visualizar. Sem acesso a logs ou configurações.</p>
+            </div>
+
+            <div style="background:var(--bg-card-2,#112B4A);border:1px solid var(--border);border-left:3px solid var(--gray-600);border-radius:var(--r-md);padding:14px">
+              <div class="inline-flex" style="margin-bottom:8px">
+                <span class="role-badge role-viewer"><svg class="icon"><use href="#ph-eye"></use></svg> Somente Leitura</span>
+              </div>
+              <p class="text-xs text-muted">Visualiza arquivos liberados. Sem download, sem edição. Ideal para auditores externos e parceiros.</p>
+            </div>
+          </div>
+
+          <!-- Permission Matrix -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Matriz de Permissões</span>
+            </div>
+
+            <div style="overflow-x:auto">
+              <table style="min-width:280px">
+                <thead>
+                  <tr>
+                    <th style="width:150px">Permissão</th>
+                    <th style="text-align:center">Admin</th>
+                    <th style="text-align:center">Colab.</th>
+                    <th style="text-align:center">Viewer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-muted text-sm">Fazer upload</td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">Fazer download</td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">Visualizar arquivos</td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">Excluir arquivos</td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">Ver log de auditoria</td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">Gerenciar usuários</td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">Exportar ANPD</td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted text-sm">Config. segurança</td>
+                    <td style="text-align:center" class="check-on"><svg class="icon"><use href="#ph-check-circle-fill"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                    <td style="text-align:center" class="check-off"><svg class="icon"><use href="#ph-x-circle"></use></svg></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+</script>
+</body>
+</html>

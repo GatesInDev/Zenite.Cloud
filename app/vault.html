@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zênite — Cofre Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('z-theme')||'dark')</script>
+  <style>
+    .vault-split {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 16px;
+      height: calc(100% - 80px);
+    }
+    .vault-panel {
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-400);
+    }
+    .panel-body { padding: 12px; flex: 1; overflow-y: auto; }
+    .panel-body::-webkit-scrollbar { width: 4px; }
+    .panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .upload-zone {
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--r-md);
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 16px;
+      transition: background var(--t-fast), border-color var(--t-fast);
+      cursor: pointer;
+    }
+    .upload-zone:hover {
+      border-color: var(--blue-500);
+      background: var(--bg-hover);
+    }
+    .upload-zone .icon { width: 28px; height: 28px; color: var(--blue-400); margin-bottom: 8px; }
+    .upload-zone p { font-size: 13px; color: var(--gray-400); }
+    .upload-zone strong { color: var(--blue-400); }
+
+    .list-view { display: flex; flex-direction: column; gap: 4px; }
+    .list-file {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      transition: all var(--t-fast);
+      border: 1px solid transparent;
+    }
+    .list-file:hover { background: var(--bg-glass-hover); border-color: var(--border); }
+    .list-file-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    .list-file-info { flex: 1; min-width: 0; }
+    .list-file-name { font-size: 13px; font-weight: 500; color: var(--white); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .list-file-meta { font-size: 11px; color: var(--gray-400); }
+    .list-file-size { font-size: 11.5px; color: var(--gray-600); white-space: nowrap; }
+    .list-file-actions { display: flex; gap: 4px; opacity: 0; transition: opacity var(--t-fast); }
+    .list-file:hover .list-file-actions { opacity: 1; }
+    .action-btn {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--gray-400);
+      font-size: 13px;
+      transition: all var(--t-fast);
+    }
+    .action-btn:hover { color: var(--white); }
+
+    .view-toggle {
+      display: flex;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      overflow: hidden;
+    }
+    .view-btn {
+      padding: 6px 10px;
+      font-size: 14px;
+      color: var(--gray-400);
+      cursor: pointer;
+      transition: all var(--t-fast);
+    }
+    .view-btn.active { background: rgba(47,128,237,.2); color: var(--blue-400); }
+  </style>
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="Frame 1.svg" alt="Zênite" style="width:28px;height:28px;display:block;flex-shrink:0">
+      <span class="logo-text">Zênite<span class="logo-tld">.cloud</span></span>
+    </div>
+    <nav>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Principal</div>
+        <a href="index.html" class="nav-item"><svg class="icon"><use href="#ph-squares-four"></use></svg> Dashboard</a>
+        <a href="vault.html" class="nav-item active"><svg class="icon"><use href="#ph-vault"></use></svg> Cofre Digital</a>
+        <a href="audit.html" class="nav-item"><svg class="icon"><use href="#ph-clipboard-text"></use></svg> Auditoria <span class="nav-badge">12</span></a>
+        <a href="access.html" class="nav-item"><svg class="icon"><use href="#ph-users-three"></use></svg> Acessos</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Conformidade</div>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-shield-check"></use></svg> LGPD</a>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-chart-bar"></use></svg> Relatórios</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Sistema</div>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-bell"></use></svg> Alertas <span class="nav-badge">3</span></a>
+        <a href="#" class="nav-item"><svg class="icon"><use href="#ph-gear"></use></svg> Configurações</a>
+      </div>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-storage">
+      <div class="storage-row"><span>Armazenamento</span><span>2,4 GB / 10 GB</span></div>
+      <div class="storage-track"><div class="storage-fill" style="width:24%"></div></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" style="background:var(--blue-600)">IY</div>
+      <div class="user-info">
+        <div class="user-name">Inne Yara</div>
+        <div class="user-role">Administradora</div>
+      </div>
+      <svg class="icon" style="color:var(--gray-600);font-size:18px"><use href="#ph-dots-three"></use></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <svg class="icon" style="font-size:16px"><use href="#ph-vault"></use></svg>
+        <span>/</span>
+        <b>Cofre Digital</b>
+        <span>/</span>
+        <span style="color:var(--gray-400)">Documentos Pessoais</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search-bar">
+        <svg class="icon"><use href="#ph-magnifying-glass"></use></svg>
+        <input type="text" placeholder="Buscar no cofre…">
+      </div>
+      <button class="btn btn-primary" style="height:36px;padding:0 14px;font-size:13px">
+        <svg class="icon"><use href="#ph-upload-simple"></use></svg> Enviar
+      </button>
+      <div class="topbar-btn" onclick="__toggleTheme()" title="Alternar tema" style="cursor:pointer">
+        <svg class="icon theme-icon"><use href="#ph-sun"></use></svg>
+      </div>
+      <div class="topbar-btn"><svg class="icon"><use href="#ph-bell"></use></svg><div class="notif-dot"></div></div>
+    </div>
+
+    <div class="page">
+      <div class="page-header" style="margin-bottom:16px">
+        <div class="inline-flex">
+          <div class="page-title" style="font-size:18px">Cofre Digital</div>
+          <div class="badge badge-green"><svg class="icon"><use href="#ph-lock"></use></svg> AES-256 · Zero-Knowledge</div>
+        </div>
+        <div class="page-subtitle">Todos os arquivos são criptografados no seu dispositivo antes do envio</div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-label">Arquivos</span>
+            <div class="stat-icon"><svg class="icon"><use href="#ph-files"></use></svg></div>
+          </div>
+          <div class="stat-value">1.247</div>
+          <div class="stat-change neu text-muted">Em 8 pastas</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--green)">
+          <div class="stat-head">
+            <span class="stat-label">Criptografados</span>
+            <div class="stat-icon" style="--icon-bg:rgba(39,194,129,.15);--icon-color:var(--green)"><svg class="icon"><use href="#ph-lock-key"></use></svg></div>
+          </div>
+          <div class="stat-value">1.247</div>
+          <div class="stat-change pos">100% protegidos</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--yellow)">
+          <div class="stat-head">
+            <span class="stat-label">IA: Dados Sensíveis</span>
+            <div class="stat-icon" style="--icon-bg:rgba(255,200,87,.15);--icon-color:var(--yellow)"><svg class="icon"><use href="#ph-robot"></use></svg></div>
+          </div>
+          <div class="stat-value">34</div>
+          <div class="stat-change neg">3 p/ revisar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-label">Armazenado</span>
+            <div class="stat-icon"><svg class="icon"><use href="#ph-hard-drive"></use></svg></div>
+          </div>
+          <div class="stat-value">2,4 GB</div>
+          <div class="stat-change neu text-muted">de 10 GB</div>
+        </div>
+      </div>
+
+      <!-- Split View -->
+      <div class="vault-split">
+
+        <!-- Folder Tree -->
+        <div class="vault-panel">
+          <div class="panel-head">Pastas</div>
+          <div class="panel-body">
+            <div class="folder-tree">
+              <div class="folder-item active">
+                <svg class="icon" style="color:var(--blue-400)"><use href="#ph-folder-open"></use></svg>
+                Documentos Pessoais
+                <span class="folder-count">142</span>
+              </div>
+              <div class="folder-item">
+                <svg class="icon" style="color:var(--yellow)"><use href="#ph-folder"></use></svg>
+                Financeiro
+                <span class="folder-count">87</span>
+              </div>
+              <div class="folder-item">
+                <svg class="icon" style="color:var(--purple)"><use href="#ph-folder"></use></svg>
+                Jurídico
+                <span class="folder-count">214</span>
+              </div>
+              <div class="folder-item">
+                <svg class="icon" style="color:var(--cyan)"><use href="#ph-folder"></use></svg>
+                Contratos
+                <span class="folder-count">356</span>
+              </div>
+              <div class="folder-item">
+                <svg class="icon" style="color:var(--green)"><use href="#ph-folder"></use></svg>
+                Apólices
+                <span class="folder-count">198</span>
+              </div>
+              <div class="folder-item">
+                <svg class="icon" style="color:var(--red)"><use href="#ph-folder"></use></svg>
+                RH &amp; Funcionários
+                <span class="folder-count">93</span>
+              </div>
+              <div class="folder-item">
+                <svg class="icon" style="color:var(--gray-400)"><use href="#ph-folder"></use></svg>
+                Backups
+                <span class="folder-count">112</span>
+              </div>
+              <div class="folder-item">
+                <svg class="icon" style="color:var(--gray-400)"><use href="#ph-folder"></use></svg>
+                Arquivo Morto
+                <span class="folder-count">45</span>
+              </div>
+
+              <div class="divider"></div>
+              <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:8px;font-size:12px">
+                <svg class="icon"><use href="#ph-folder-plus"></use></svg> Nova pasta
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Panel -->
+        <div class="vault-panel">
+          <div class="panel-head" style="display:flex;align-items:center;justify-content:space-between">
+            <span>Documentos Pessoais <span style="color:var(--gray-600);font-weight:400">· 142 arquivos</span></span>
+            <div class="inline-flex" style="gap:8px">
+              <div class="filter-chip active">
+                <svg class="icon"><use href="#ph-funnel-simple"></use></svg> Todos
+              </div>
+              <div class="filter-chip">
+                <svg class="icon"><use href="#ph-warning"></use></svg> Sensíveis
+              </div>
+              <div class="view-toggle">
+                <div class="view-btn active"><svg class="icon"><use href="#ph-list-bullets"></use></svg></div>
+                <div class="view-btn"><svg class="icon"><use href="#ph-squares-four"></use></svg></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+
+            <!-- Upload Zone -->
+            <div class="upload-zone">
+              <div><svg class="icon"><use href="#ph-cloud-arrow-up"></use></svg></div>
+              <p>Arraste arquivos aqui ou <strong>clique para enviar</strong></p>
+              <p style="font-size:11px;margin-top:4px;color:var(--gray-600)">Criptografia AES-256 automática antes do upload</p>
+            </div>
+
+            <!-- File List -->
+            <div class="list-view">
+
+              <div class="list-file">
+                <svg class="icon list-file-icon" style="color:var(--red)"><use href="#ph-file-pdf"></use></svg>
+                <div class="list-file-info">
+                  <div class="list-file-name">CPF_Fulano_da_Silva.pdf</div>
+                  <div class="list-file-meta">
+                    <div class="tags" style="margin-top:2px">
+                      <span class="tag danger">CPF</span>
+                      <span class="tag danger">Dado Pessoal</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="enc-badge"><svg class="icon"><use href="#ph-lock-key"></use></svg> enc.</div>
+                <div class="list-file-size">241 KB</div>
+                <div class="list-file-actions">
+                  <div class="action-btn"><svg class="icon"><use href="#ph-eye"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-download-simple"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-share-network"></use></svg></div>
+                </div>
+              </div>
+
+              <div class="list-file">
+                <svg class="icon list-file-icon" style="color:var(--yellow)"><use href="#ph-file-xls"></use></svg>
+                <div class="list-file-info">
+                  <div class="list-file-name">Planilha_Clientes_Mai_2026.xlsx</div>
+                  <div class="list-file-meta">
+                    <div class="tags" style="margin-top:2px">
+                      <span class="tag warn">Revisar</span>
+                      <span class="tag danger">CPF exposto</span>
+                      <span class="tag">Dado Financeiro</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="enc-badge"><svg class="icon"><use href="#ph-lock-key"></use></svg> enc.</div>
+                <div class="list-file-size">1,2 MB</div>
+                <div class="list-file-actions">
+                  <div class="action-btn"><svg class="icon"><use href="#ph-eye"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-download-simple"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-share-network"></use></svg></div>
+                </div>
+              </div>
+
+              <div class="list-file">
+                <svg class="icon list-file-icon" style="color:var(--red)"><use href="#ph-image"></use></svg>
+                <div class="list-file-info">
+                  <div class="list-file-name">RG_Maria_Antonia.jpg</div>
+                  <div class="list-file-meta">
+                    <div class="tags" style="margin-top:2px">
+                      <span class="tag danger">RG</span>
+                      <span class="tag danger">Dado Pessoal Sensível</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="enc-badge"><svg class="icon"><use href="#ph-lock-key"></use></svg> enc.</div>
+                <div class="list-file-size">890 KB</div>
+                <div class="list-file-actions">
+                  <div class="action-btn"><svg class="icon"><use href="#ph-eye"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-download-simple"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-share-network"></use></svg></div>
+                </div>
+              </div>
+
+              <div class="list-file">
+                <svg class="icon list-file-icon" style="color:var(--blue-400)"><use href="#ph-file-pdf"></use></svg>
+                <div class="list-file-info">
+                  <div class="list-file-name">Contrato_Prestação_Serviço_Abril.pdf</div>
+                  <div class="list-file-meta">
+                    <div class="tags" style="margin-top:2px">
+                      <span class="tag">Contrato</span>
+                      <span class="tag">Dado Financeiro</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="enc-badge"><svg class="icon"><use href="#ph-lock-key"></use></svg> enc.</div>
+                <div class="list-file-size">3,4 MB</div>
+                <div class="list-file-actions">
+                  <div class="action-btn"><svg class="icon"><use href="#ph-eye"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-download-simple"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-share-network"></use></svg></div>
+                </div>
+              </div>
+
+              <div class="list-file">
+                <svg class="icon list-file-icon" style="color:var(--red)"><use href="#ph-file-pdf"></use></svg>
+                <div class="list-file-info">
+                  <div class="list-file-name">Comprovante_Residencia_Carlos.pdf</div>
+                  <div class="list-file-meta">
+                    <div class="tags" style="margin-top:2px">
+                      <span class="tag danger">Dado Pessoal</span>
+                      <span class="tag danger">Endereço</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="enc-badge"><svg class="icon"><use href="#ph-lock-key"></use></svg> enc.</div>
+                <div class="list-file-size">512 KB</div>
+                <div class="list-file-actions">
+                  <div class="action-btn"><svg class="icon"><use href="#ph-eye"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-download-simple"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-share-network"></use></svg></div>
+                </div>
+              </div>
+
+              <div class="list-file">
+                <svg class="icon list-file-icon" style="color:var(--gray-400)"><use href="#ph-file-text"></use></svg>
+                <div class="list-file-info">
+                  <div class="list-file-name">Ficha_Cadastral_2026.docx</div>
+                  <div class="list-file-meta">
+                    <div class="tags" style="margin-top:2px">
+                      <span class="tag">Cadastro</span>
+                      <span class="tag danger">Dado Pessoal</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="enc-badge"><svg class="icon"><use href="#ph-lock-key"></use></svg> enc.</div>
+                <div class="list-file-size">78 KB</div>
+                <div class="list-file-actions">
+                  <div class="action-btn"><svg class="icon"><use href="#ph-eye"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-download-simple"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-share-network"></use></svg></div>
+                </div>
+              </div>
+
+              <div class="list-file">
+                <svg class="icon list-file-icon" style="color:var(--green)"><use href="#ph-file-pdf"></use></svg>
+                <div class="list-file-info">
+                  <div class="list-file-name">Relatório_LGPD_Q1_2026.pdf</div>
+                  <div class="list-file-meta">
+                    <div class="tags" style="margin-top:2px">
+                      <span class="tag">Relatório</span>
+                      <span class="tag">LGPD</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="enc-badge"><svg class="icon"><use href="#ph-lock-key"></use></svg> enc.</div>
+                <div class="list-file-size">2,1 MB</div>
+                <div class="list-file-actions">
+                  <div class="action-btn"><svg class="icon"><use href="#ph-eye"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-download-simple"></use></svg></div>
+                  <div class="action-btn"><svg class="icon"><use href="#ph-share-network"></use></svg></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+  document.querySelectorAll('.folder-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.folder-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

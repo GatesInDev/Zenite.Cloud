@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zênite — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('z-theme')||'dark')</script>
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="Frame 1.svg" alt="Zênite" style="width:28px;height:28px;display:block;flex-shrink:0">
+      <span class="logo-text">Zênite<span class="logo-tld">.cloud</span></span>
+    </div>
+
+    <nav>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Principal</div>
+        <a href="index.html" class="nav-item active">
+          <svg class="icon"><use href="#ph-squares-four"></use></svg> Dashboard
+        </a>
+        <a href="vault.html" class="nav-item">
+          <svg class="icon"><use href="#ph-vault"></use></svg> Cofre Digital
+        </a>
+        <a href="audit.html" class="nav-item">
+          <svg class="icon"><use href="#ph-clipboard-text"></use></svg> Auditoria
+          <span class="nav-badge">12</span>
+        </a>
+        <a href="access.html" class="nav-item">
+          <svg class="icon"><use href="#ph-users-three"></use></svg> Acessos
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Conformidade</div>
+        <a href="#" class="nav-item">
+          <svg class="icon"><use href="#ph-shield-check"></use></svg> LGPD
+        </a>
+        <a href="#" class="nav-item">
+          <svg class="icon"><use href="#ph-chart-bar"></use></svg> Relatórios
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Sistema</div>
+        <a href="#" class="nav-item">
+          <svg class="icon"><use href="#ph-bell"></use></svg> Alertas
+          <span class="nav-badge">3</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg class="icon"><use href="#ph-gear"></use></svg> Configurações
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-storage">
+      <div class="storage-row">
+        <span>Armazenamento</span>
+        <span>2,4 GB / 10 GB</span>
+      </div>
+      <div class="storage-track">
+        <div class="storage-fill" style="width:24%"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" style="background:var(--blue-600)">IY</div>
+      <div class="user-info">
+        <div class="user-name">Inne Yara</div>
+        <div class="user-role">Administradora</div>
+      </div>
+      <svg class="icon" style="color:var(--gray-600);font-size:18px"><use href="#ph-dots-three"></use></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <span class="topbar-title">Dashboard</span>
+      <div class="topbar-spacer"></div>
+      <div class="search-bar">
+        <svg class="icon"><use href="#ph-magnifying-glass"></use></svg>
+        <input type="text" placeholder="Buscar arquivos, logs…">
+      </div>
+      <div class="topbar-btn" style="position:relative">
+        <svg class="icon"><use href="#ph-bell"></use></svg>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="topbar-btn" onclick="__toggleTheme()" title="Alternar tema" style="cursor:pointer">
+        <svg class="icon theme-icon"><use href="#ph-sun"></use></svg>
+      </div>
+      <div class="topbar-btn"><svg class="icon"><use href="#ph-question"></use></svg></div>
+    </div>
+
+    <!-- PAGE -->
+    <div class="page">
+
+      <div class="page-header">
+        <div class="page-title">Bom dia, Inne</div>
+        <div class="page-subtitle">Sexta-feira, 16 de maio de 2026 · Todos os sistemas operacionais</div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent:var(--green)">
+          <div class="stat-head">
+            <span class="stat-label">Score LGPD</span>
+            <div class="stat-icon" style="--icon-bg:rgba(39,194,129,.15);--icon-color:var(--green)">
+              <svg class="icon"><use href="#ph-shield-check"></use></svg>
+            </div>
+          </div>
+          <div class="stat-value">84%</div>
+          <div class="stat-change pos"><svg class="icon"><use href="#ph-trend-up"></use></svg> +6% este mês</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-label">Arquivos Protegidos</span>
+            <div class="stat-icon">
+              <svg class="icon"><use href="#ph-files"></use></svg>
+            </div>
+          </div>
+          <div class="stat-value">1.247</div>
+          <div class="stat-change pos"><svg class="icon"><use href="#ph-trend-up"></use></svg> +43 esta semana</div>
+        </div>
+
+        <div class="stat-card" style="--accent:var(--red)">
+          <div class="stat-head">
+            <span class="stat-label">Ameaças Bloqueadas</span>
+            <div class="stat-icon" style="--icon-bg:rgba(255,90,95,.15);--icon-color:var(--red)">
+              <svg class="icon"><use href="#ph-shield-warning"></use></svg>
+            </div>
+          </div>
+          <div class="stat-value">18</div>
+          <div class="stat-change neg"><svg class="icon"><use href="#ph-trend-up"></use></svg> +3 hoje</div>
+        </div>
+
+        <div class="stat-card" style="--accent:var(--purple)">
+          <div class="stat-head">
+            <span class="stat-label">Usuários Ativos</span>
+            <div class="stat-icon" style="--icon-bg:rgba(123,97,255,.15);--icon-color:var(--purple)">
+              <svg class="icon"><use href="#ph-users"></use></svg>
+            </div>
+          </div>
+          <div class="stat-value">7</div>
+          <div class="stat-change neu"><svg class="icon"><use href="#ph-circle"></use></svg> 2 online agora</div>
+        </div>
+      </div>
+
+      <!-- CONTENT GRID -->
+      <div class="grid-3-1">
+
+        <!-- LEFT COL -->
+        <div>
+          <!-- Chart -->
+          <div class="card gap-16">
+            <div class="card-head">
+              <span class="card-title">Atividade — 7 Dias</span>
+              <div class="inline-flex" style="gap:16px">
+                <span class="text-xs text-muted inline-flex" style="gap:5px">
+                  <span style="width:8px;height:8px;border-radius:2px;background:var(--blue-600);display:inline-block;margin-top:3px"></span> Acessos
+                </span>
+                <span class="text-xs text-muted inline-flex" style="gap:5px">
+                  <span style="width:8px;height:8px;border-radius:2px;background:var(--red);display:inline-block;margin-top:3px"></span> Bloqueios
+                </span>
+              </div>
+            </div>
+            <div class="chart-bars">
+              <div class="chart-bar" style="height:62%"></div>
+              <div class="chart-bar" style="height:82%"></div>
+              <div class="chart-bar" style="height:48%"></div>
+              <div class="chart-bar" style="height:91%"></div>
+              <div class="chart-bar" style="height:74%"></div>
+              <div class="chart-bar" style="height:56%"></div>
+              <div class="chart-bar current" style="height:88%"></div>
+            </div>
+            <div class="chart-labels">
+              <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
+            </div>
+          </div>
+
+          <div style="height:16px"></div>
+
+          <!-- Activity Feed -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Atividade Recente</span>
+              <a href="audit.html" class="card-action">Ver log completo →</a>
+            </div>
+
+            <div class="activity-item">
+              <div class="act-icon" style="background:rgba(39,194,129,.12);color:var(--green)"><svg class="icon"><use href="#ph-download-simple"></use></svg></div>
+              <div class="act-body">
+                <div class="act-title">Contrato_Cliente_004.pdf baixado</div>
+                <div class="act-desc">Rodrigo Dal Piva · Via app desktop</div>
+              </div>
+              <div class="act-time">14:32</div>
+            </div>
+
+            <div class="activity-item">
+              <div class="act-icon" style="background:rgba(232,64,74,.12);color:var(--red)"><svg class="icon"><use href="#ph-shield-warning"></use></svg></div>
+              <div class="act-body">
+                <div class="act-title">Acesso bloqueado — IP suspeito</div>
+                <div class="act-desc">177.42.88.12 · 127 tentativas</div>
+              </div>
+              <div class="act-time">13:11</div>
+            </div>
+
+            <div class="activity-item">
+              <div class="act-icon" style="background:rgba(47,128,237,.12);color:var(--blue-400)"><svg class="icon"><use href="#ph-upload-simple"></use></svg></div>
+              <div class="act-body">
+                <div class="act-title">Apólice_2026_Q2.pdf enviado</div>
+                <div class="act-desc">Inne Yara · Pasta Seguros</div>
+              </div>
+              <div class="act-time">11:04</div>
+            </div>
+
+            <div class="activity-item">
+              <div class="act-icon" style="background:rgba(79,209,197,.12);color:var(--cyan)"><svg class="icon"><use href="#ph-user-plus"></use></svg></div>
+              <div class="act-body">
+                <div class="act-title">Lucas Nylan adicionado como Colaborador</div>
+                <div class="act-desc">Por Inne Yara</div>
+              </div>
+              <div class="act-time">09:45</div>
+            </div>
+
+            <div class="activity-item">
+              <div class="act-icon" style="background:rgba(245,166,35,.12);color:var(--yellow)"><svg class="icon"><use href="#ph-robot"></use></svg></div>
+              <div class="act-body">
+                <div class="act-title">Detector: CPF exposto em arquivo</div>
+                <div class="act-desc">Planilha_Clientes_Mai.xlsx · Marcado p/ revisão</div>
+              </div>
+              <div class="act-time">08:20</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COL -->
+        <div>
+          <!-- Compliance -->
+          <div class="card gap-16">
+            <div class="card-head">
+              <span class="card-title">Conformidade LGPD</span>
+              <span class="card-action">Gerar relatório →</span>
+            </div>
+
+            <div class="compliance-score-big">
+              <div class="score-num">84%</div>
+              <div class="score-lbl">Índice de conformidade</div>
+              <div class="comp-bar-track">
+                <div class="comp-bar-fill" style="width:84%"></div>
+              </div>
+            </div>
+
+            <div class="comp-row">
+              <span class="comp-row-label">Base legal documentada</span>
+              <div class="comp-status text-green"><div class="dot dot-green"></div> Conforme</div>
+            </div>
+            <div class="comp-row">
+              <span class="comp-row-label">Consentimento registrado</span>
+              <div class="comp-status text-green"><div class="dot dot-green"></div> Conforme</div>
+            </div>
+            <div class="comp-row">
+              <span class="comp-row-label">Retenção de dados</span>
+              <div class="comp-status text-yellow"><div class="dot dot-yellow"></div> Atenção</div>
+            </div>
+            <div class="comp-row">
+              <span class="comp-row-label">DPO designado</span>
+              <div class="comp-status text-yellow"><div class="dot dot-yellow"></div> Pendente</div>
+            </div>
+            <div class="comp-row">
+              <span class="comp-row-label">Registro de tratamento</span>
+              <div class="comp-status text-green"><div class="dot dot-green"></div> Conforme</div>
+            </div>
+          </div>
+
+          <div style="height:16px"></div>
+
+          <!-- Threats -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Ameaças Recentes</span>
+              <a href="audit.html" class="card-action">Ver log →</a>
+            </div>
+
+            <div class="threat-item">
+              <div class="threat-icon"><svg class="icon"><use href="#ph-prohibit"></use></svg></div>
+              <div class="act-body">
+                <div class="threat-title">Brute Force Bloqueado</div>
+                <div class="threat-desc">127 tentativas · IP: 103.52.XX.XX</div>
+              </div>
+              <div class="threat-time">13:11</div>
+            </div>
+
+            <div class="threat-item" style="border-left-color:var(--yellow)">
+              <div class="threat-icon" style="background:rgba(245,166,35,.12);color:var(--yellow)"><svg class="icon"><use href="#ph-warning-circle"></use></svg></div>
+              <div class="act-body">
+                <div class="threat-title">Download em massa detectado</div>
+                <div class="threat-desc">Colaborador 02 · 43 arquivos</div>
+              </div>
+              <div class="threat-time">Ontem</div>
+            </div>
+
+            <div class="threat-item" style="border-left-color:var(--yellow)">
+              <div class="threat-icon" style="background:rgba(245,166,35,.12);color:var(--yellow)"><svg class="icon"><use href="#ph-file-warning"></use></svg></div>
+              <div class="act-body">
+                <div class="threat-title">CPF detectado em arquivo não cifrado</div>
+                <div class="threat-desc">Planilha_Clientes_Mai.xlsx</div>
+              </div>
+              <div class="threat-time">Hoje</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page -->
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<script>
+  document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+</script>
+</body>
+</html>

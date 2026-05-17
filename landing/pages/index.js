@@ -161,10 +161,10 @@ function EmailForm({ source = 'hero', size = 'large', c, sh }) {
 
 /* ── App Mockup ── */
 const screenImages = {
-  dashboard: { dark: '/DashboardDark.png', light: '/DashboardLigth.png' },
-  vault:     { dark: '/VaultDark.png',     light: '/VaultLigth.png'     },
-  audit:     { dark: '/AuditDark.png',     light: '/AuditLigth.png'     },
-  access:    { dark: '/accessDark.png',    light: '/accessLigth.png'    },
+  dashboard: { dark: '/DashboardDark.webp', light: '/DashboardLigth.webp' },
+  vault:     { dark: '/VaultDark.webp',     light: '/VaultLigth.webp'     },
+  audit:     { dark: '/AuditDark.webp',     light: '/AuditLigth.webp'     },
+  access:    { dark: '/accessDark.webp',    light: '/accessLigth.webp'    },
 };
 
 function AppMockup({ screen = 'dashboard', isDark, sh, c }) {

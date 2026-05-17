@@ -291,7 +291,7 @@ export default function Home() {
         </div>
 
         <h1 className="hero-2" style={{ fontSize: 'clamp(30px,5vw,68px)', fontWeight: 900, letterSpacing: -2, textAlign: 'center', lineHeight: 1.08, maxWidth: 800, marginBottom: 20 }}>
-          <span style={{ color: c.text }}>Seus dados de clientes</span><br />
+          <span style={{ color: c.text }}>Os dados de seus clientes</span><br />
           <span style={{ color: c.blue4 }}>blindados e em conformidade</span><br />
           <span style={{ color: c.text }}>com a LGPD</span>
         </h1>

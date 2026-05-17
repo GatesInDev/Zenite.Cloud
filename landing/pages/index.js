@@ -119,13 +119,17 @@ function EmailForm({ source = 'hero', size = 'large', c, sh }) {
 }
 
 /* ── App Mockup ────────────────────────────────────── */
-function AppMockup({ screen = 'dashboard', c, sh }) {
-  const screens = {
-    dashboard: <DashMockup c={c} />, vault: <VaultMockup c={c} />,
-    audit: <AuditMockup c={c} />, access: <AccessMockup c={c} />,
-  };
+const screenImages = {
+  dashboard: { dark: '/DashboardDark.png', light: '/DashboardLigth.png' },
+  vault:     { dark: '/VaultDark.png',     light: '/VaultLigth.png'     },
+  audit:     { dark: '/AuditDark.png',     light: '/AuditLigth.png'     },
+  access:    { dark: '/accessDark.png',    light: '/accessLigth.png'    },
+};
+
+function AppMockup({ screen = 'dashboard', isDark, sh, c }) {
+  const src = screenImages[screen][isDark ? 'dark' : 'light'];
   return (
-    <div style={{ borderRadius: 6, overflow: 'hidden', border: `1px solid ${c.borderHard}`, boxShadow: sh.s3, background: c.base, fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ borderRadius: 6, overflow: 'hidden', border: `1px solid ${c.borderHard}`, boxShadow: sh.s3 }}>
       <div style={{ background: c.surface, padding: '10px 16px', borderBottom: `1px solid ${c.border}`, display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{ display: 'flex', gap: 5 }}>
           {['#FF5A5F','#FFC857','#27C281'].map(col => (
@@ -136,164 +140,7 @@ function AppMockup({ screen = 'dashboard', c, sh }) {
           app.zenite.cloud
         </div>
       </div>
-      {screens[screen]}
-    </div>
-  );
-}
-
-function DashMockup({ c }) {
-  return (
-    <div style={{ display: 'flex', height: 340 }}>
-      <div style={{ width: 160, background: c.surface, borderRight: `1px solid ${c.border}`, padding: '12px 8px', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 8px', marginBottom: 16 }}>
-          <img src="/logo.svg" alt="Zênite" width={18} height={18} />
-          <span style={{ fontSize: 12, fontWeight: 700, color: c.text }}>Zênite<span style={{ color: c.textSub, fontWeight: 400 }}>.cloud</span></span>
-        </div>
-        {['Dashboard','Cofre','Auditoria','Acessos'].map((label, i) => (
-          <div key={label} style={{ padding: '7px 8px', borderRadius: 3, marginBottom: 2, background: i === 0 ? 'rgba(47,128,237,0.1)' : 'transparent', color: i === 0 ? c.blue4 : c.textSub, fontSize: 11, fontWeight: i === 0 ? 600 : 400, borderLeft: i === 0 ? `2px solid ${c.blue5}` : '2px solid transparent' }}>
-            {label}
-          </div>
-        ))}
-      </div>
-      <div style={{ flex: 1, padding: 14, overflow: 'hidden', background: c.base }}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12, color: c.text }}>Dashboard</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 12 }}>
-          {[
-            { label: 'Score LGPD', val: '84%', col: c.green },
-            { label: 'Arquivos', val: '1.247', col: c.blue5 },
-            { label: 'Ameaças', val: '18', col: c.red },
-            { label: 'Usuários', val: '7', col: c.purple },
-          ].map(s => (
-            <div key={s.label} style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, padding: '8px 10px', borderTop: `2px solid ${s.col}` }}>
-              <div style={{ fontSize: 9, color: c.textSub, marginBottom: 4, textTransform: 'uppercase' }}>{s.label}</div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: s.col }}>{s.val}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 100px', gap: 8 }}>
-          <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, padding: 10 }}>
-            <div style={{ fontSize: 10, color: c.textSub, marginBottom: 8 }}>Atividade — 7 dias</div>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, height: 60 }}>
-              {[62,82,48,91,74,56,88].map((h, i) => (
-                <div key={i} style={{ flex: 1, height: `${h}%`, borderRadius: '2px 2px 0 0', background: c.blue5, opacity: i === 6 ? 0.9 : 0.35 }} />
-              ))}
-            </div>
-          </div>
-          <div style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 4, padding: 10 }}>
-            <div style={{ fontSize: 10, color: c.textSub, marginBottom: 6 }}>LGPD</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: c.green, lineHeight: 1 }}>84%</div>
-            <div style={{ height: 4, background: c.card2, borderRadius: 2, marginTop: 8, overflow: 'hidden' }}>
-              <div style={{ width: '84%', height: '100%', background: c.green, borderRadius: 2 }} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VaultMockup({ c }) {
-  return (
-    <div style={{ display: 'flex', height: 340 }}>
-      <div style={{ width: 130, background: c.surface, borderRight: `1px solid ${c.border}`, padding: '12px 8px', flexShrink: 0 }}>
-        <div style={{ fontSize: 9, color: c.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, padding: '0 4px' }}>Pastas</div>
-        {['Docs Pessoais','Financeiro','Jurídico','Contratos','Apólices'].map((label, i) => (
-          <div key={label} style={{ padding: '6px 6px', borderRadius: 3, marginBottom: 2, background: i === 0 ? 'rgba(47,128,237,0.1)' : 'transparent', color: i === 0 ? c.blue4 : c.textSub, fontSize: 10, fontWeight: i === 0 ? 600 : 400, borderLeft: i === 0 ? `2px solid ${c.blue5}` : '2px solid transparent', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {label}
-          </div>
-        ))}
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'hidden', background: c.base }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>Documentos Pessoais</div>
-          <div style={{ fontSize: 9, background: 'rgba(22,163,74,0.1)', color: c.green, border: `1px solid rgba(22,163,74,0.25)`, borderRadius: 3, padding: '3px 7px', fontWeight: 700 }}>AES-256</div>
-        </div>
-        {[
-          { name: 'CPF_Cliente_Silva.pdf', tags: ['CPF', 'Pessoal'], size: '241 KB', danger: true },
-          { name: 'Planilha_Clientes.xlsx', tags: ['CPF exposto', 'Revisar'], size: '1,2 MB', warn: true },
-          { name: 'Contrato_Serviço.pdf', tags: ['Contrato'], size: '3,4 MB', danger: false },
-          { name: 'RG_Maria_Antonia.jpg', tags: ['RG', 'Sensível'], size: '890 KB', danger: true },
-          { name: 'Ficha_Cadastral.docx', tags: ['Cadastro'], size: '78 KB', danger: false },
-        ].map(f => (
-          <div key={f.name} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 8px', borderRadius: 3, marginBottom: 4, background: c.card, border: `1px solid ${c.border}` }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 500, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</div>
-              <div style={{ display: 'flex', gap: 3, marginTop: 2 }}>
-                {f.tags.map(t => (
-                  <span key={t} style={{ fontSize: 8, fontWeight: 700, padding: '1px 4px', borderRadius: 2, background: f.danger || f.warn ? 'rgba(220,38,38,0.1)' : 'rgba(13,148,136,0.1)', color: f.danger || f.warn ? c.red : c.cyan }}>{t}</span>
-                ))}
-              </div>
-            </div>
-            <span style={{ fontSize: 10, color: c.textFaint }}>{f.size}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function AuditMockup({ c }) {
-  const events = [
-    { time: '14:32', user: 'Rodrigo D.', action: 'Download', file: 'Contrato_004.pdf', status: 'ok' },
-    { time: '13:11', user: 'IP 177.42…', action: 'Login', file: '127 tentativas', status: 'block' },
-    { time: '11:04', user: 'Inne Yara', action: 'Upload', file: 'Apólice_Q2.pdf', status: 'ok' },
-    { time: '09:45', user: 'Inne Yara', action: 'Adicionou', file: 'Lucas Nylan', status: 'ok' },
-    { time: '08:20', user: 'Zênite IA', action: 'Alerta IA', file: 'CPF detectado', status: 'warn' },
-  ];
-  return (
-    <div style={{ display: 'flex', height: 340 }}>
-      <div style={{ width: 120, background: c.surface, borderRight: `1px solid ${c.border}`, padding: '12px 8px', flexShrink: 0 }}>
-        <div style={{ fontSize: 9, color: c.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, padding: '0 4px' }}>Filtros</div>
-        {['Todos','Downloads','Uploads','Bloqueios','Logins','IA'].map((f, i) => (
-          <div key={f} style={{ padding: '5px 8px', borderRadius: 3, marginBottom: 2, fontSize: 10, background: i === 0 ? 'rgba(47,128,237,0.1)' : 'transparent', color: i === 0 ? c.blue4 : c.textSub, fontWeight: i === 0 ? 600 : 400, borderLeft: i === 0 ? `2px solid ${c.blue5}` : '2px solid transparent' }}>{f}</div>
-        ))}
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'hidden', background: c.base }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>Trilha de Auditoria</div>
-          <div style={{ fontSize: 9, background: 'rgba(22,163,74,0.08)', color: c.green, border: `1px solid rgba(22,163,74,0.2)`, borderRadius: 3, padding: '3px 8px', fontWeight: 700 }}>Exportar ANPD</div>
-        </div>
-        {events.map((ev, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', borderRadius: 3, marginBottom: 3, background: c.card, border: `1px solid ${c.border}` }}>
-            <span style={{ fontSize: 10, color: c.textFaint, fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{ev.time}</span>
-            <span style={{ fontSize: 10, color: c.textSub, flex: '0 0 70px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ev.user}</span>
-            <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 5px', borderRadius: 3, background: ev.status === 'block' ? 'rgba(220,38,38,0.1)' : ev.status === 'warn' ? 'rgba(217,119,6,0.1)' : 'rgba(22,163,74,0.1)', color: ev.status === 'block' ? c.red : ev.status === 'warn' ? c.yellow : c.green, whiteSpace: 'nowrap' }}>{ev.action}</span>
-            <span style={{ fontSize: 10, color: c.textSub, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ev.file}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function AccessMockup({ c }) {
-  const users = [
-    { initials: 'IY', name: 'Inne Yara',    email: 'inn...@bensseguros.com.br', role: 'Admin',       online: true  },
-    { initials: 'RD', name: 'Rodrigo D.',   email: 'rod...@dalpiva.adv.br',      role: 'Colaborador', online: true  },
-    { initials: 'LN', name: 'Lucas Nylan',  email: 'luc...@clinica.com.br',      role: 'Colaborador', online: false },
-    { initials: 'BS', name: 'Bernardo S.',  email: 'ber...@inviolavel.com.br',   role: 'Colaborador', online: false },
-    { initials: 'AU', name: 'Auditora Ext.', email: 'aud...@externo.com.br',     role: 'Viewer',      online: false },
-  ];
-  const avatarBg = { Admin: c.purple, Colaborador: c.blue6, Viewer: c.textFaint };
-  return (
-    <div style={{ padding: 16, height: 340, overflow: 'hidden', background: c.base }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>Usuários &amp; Permissões</div>
-        <div style={{ fontSize: 9, background: 'rgba(47,128,237,0.1)', color: c.blue4, border: `1px solid rgba(47,128,237,0.25)`, borderRadius: 3, padding: '3px 8px', fontWeight: 700 }}>+ Convidar</div>
-      </div>
-      {users.map(u => (
-        <div key={u.name} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 4, marginBottom: 5, background: c.card, border: `1px solid ${c.border}` }}>
-          <div style={{ width: 26, height: 26, borderRadius: 3, background: avatarBg[u.role], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#FFFFFF', flexShrink: 0 }}>
-            {u.initials}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: c.text }}>{u.name}</div>
-            <div style={{ fontSize: 10, color: c.textSub, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.email}</div>
-          </div>
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: u.online ? c.green : c.textFaint, flexShrink: 0 }} />
-          <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 3, background: u.role === 'Admin' ? 'rgba(109,40,217,0.12)' : u.role === 'Viewer' ? c.card2 : 'rgba(47,128,237,0.1)', color: u.role === 'Admin' ? c.purple : u.role === 'Viewer' ? c.textSub : c.blue4, whiteSpace: 'nowrap', flexShrink: 0 }}>{u.role}</span>
-        </div>
-      ))}
+      <img src={src} alt={screen} style={{ display: 'block', width: '100%', height: 'auto' }} />
     </div>
   );
 }
@@ -481,11 +328,11 @@ export default function Home() {
           </div>
 
           <div data-reveal data-d="3">
-            <AppMockup screen={activeScreen} c={c} sh={sh} />
+            <AppMockup screen={activeScreen} isDark={isDark} c={c} sh={sh} />
           </div>
 
           <p style={{ fontSize: 12, color: c.textFaint, textAlign: 'center', marginTop: 12 }}>
-            Interface de demonstração · Screenshots reais disponíveis no lançamento
+            Interface real do produto · Alterna automaticamente com o tema
           </p>
         </div>
       </section>

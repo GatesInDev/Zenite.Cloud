@@ -1,5 +1,39 @@
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
+import {
+  AreaChart, Area, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer,
+} from 'recharts';
+
+const lgpdCards = [
+  { value: '80%', line1: 'ouviram falar',   line2: 'da legislação',         footer: 'Conhecimento superficial',     accent: '#27C281', footerAlpha: 'rgba(39,194,129,0.12)'  },
+  { value: '5%',  line1: 'conhecem em',     line2: 'profundidade',          footer: 'Quase ninguém domina',         accent: '#FFC857', footerAlpha: 'rgba(255,200,87,0.12)'  },
+  { value: '77%', line1: 'NÃO tomaram',     line2: 'nenhuma providência',   footer: 'Expostas a multas e ataques',  accent: '#FF5A5F', footerAlpha: 'rgba(255,90,95,0.12)'   },
+];
+
+const marketData = [
+  { year: '2025', value: 5.6  },
+  { year: '2026', value: 6.8  },
+  { year: '2027', value: 8.2  },
+  { year: '2028', value: 9.9  },
+  { year: '2029', value: 12.0 },
+  { year: '2030', value: 14.6 },
+  { year: '2031', value: 17.7 },
+  { year: '2032', value: 21.4 },
+  { year: '2033', value: 26.0 },
+  { year: '2034', value: 31.5 },
+  { year: '2035', value: 38.3 },
+];
+
+function MarketTooltip({ active, payload, label, c }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div style={{ background: c.card, border: `1px solid ${c.borderHard}`, borderRadius: 8, padding: '8px 14px' }}>
+      <p style={{ fontSize: 11, color: c.textSub, marginBottom: 2 }}>{label}</p>
+      <p style={{ fontSize: 14, fontWeight: 700, color: c.blue4 }}>US$ {payload[0].value.toFixed(1)} bi</p>
+    </div>
+  );
+}
 
 const themes = {
   dark: {
@@ -155,13 +189,16 @@ function AppMockup({ screen = 'dashboard', isDark, sh, c }) {
 /* ── Page ── */
 export default function Home() {
   const [activeScreen, setActiveScreen] = useState('dashboard');
-  const [isDark, setIsDark]             = useState(true);
+  const [isDark, setIsDark]             = useState(false);
   const [menuOpen, setMenuOpen]         = useState(false);
+  const [chartMounted, setChartMounted] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('z-theme');
     if (saved) setIsDark(saved === 'dark');
   }, []);
+
+  useEffect(() => { setChartMounted(true); }, []);
 
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -211,6 +248,10 @@ export default function Home() {
         <div className="nav-desktop">
           <a href="#features" style={{ color: c.textSub, fontSize: 14, padding: '7px 14px', borderRadius: 4, textDecoration: 'none' }}>Funcionalidades</a>
           <a href="#preview"  style={{ color: c.textSub, fontSize: 14, padding: '7px 14px', borderRadius: 4, textDecoration: 'none' }}>Prévia</a>
+          <a href="https://wa.link/3y9fsd" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, color: c.green, fontSize: 13, fontWeight: 600, padding: '7px 14px', borderRadius: 4, textDecoration: 'none' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.123 1.522 5.855L0 24l6.335-1.492A11.941 11.941 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.374l-.36-.214-3.724.877.944-3.618-.235-.372A9.817 9.817 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+            WhatsApp
+          </a>
           <a href="#cta" style={{ background: c.blue5, color: '#FFFFFF', fontSize: 13, fontWeight: 700, padding: '8px 18px', borderRadius: 4, textDecoration: 'none', boxShadow: sh.s1 }}>Acesso Antecipado</a>
           <div style={{ width: 1, height: 20, background: c.border, margin: '0 4px' }} />
           <ThemeBtn />
@@ -230,6 +271,10 @@ export default function Home() {
       <div className={`nav-mobile-menu${menuOpen ? ' open' : ''}`} style={{ background: c.surface, borderBottom: `1px solid ${c.border}`, boxShadow: sh.s2 }}>
         <a href="#features" onClick={closeMenu} style={{ display: 'block', color: c.textSub, fontSize: 16, fontWeight: 500, padding: '14px 0', borderBottom: `1px solid ${c.border}` }}>Funcionalidades</a>
         <a href="#preview"  onClick={closeMenu} style={{ display: 'block', color: c.textSub, fontSize: 16, fontWeight: 500, padding: '14px 0', borderBottom: `1px solid ${c.border}` }}>Prévia</a>
+        <a href="https://wa.link/3y9fsd" target="_blank" rel="noopener noreferrer" onClick={closeMenu} style={{ display: 'flex', alignItems: 'center', gap: 8, color: c.green, fontSize: 16, fontWeight: 600, padding: '14px 0', borderBottom: `1px solid ${c.border}` }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.123 1.522 5.855L0 24l6.335-1.492A11.941 11.941 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.374l-.36-.214-3.724.877.944-3.618-.235-.372A9.817 9.817 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+          WhatsApp
+        </a>
         <div style={{ padding: '16px 0 8px' }}>
           <a href="#cta" onClick={closeMenu} style={{ display: 'block', background: c.blue5, color: '#FFFFFF', fontSize: 15, fontWeight: 700, padding: '13px 20px', borderRadius: 4, textAlign: 'center' }}>Acesso Antecipado</a>
         </div>
@@ -286,9 +331,9 @@ export default function Home() {
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 12 }}>
             {[
-              { title: '"Documento no WhatsApp — se apagar, já era."',          desc: 'Inne Yara, Bens Seguros · Campina Grande/PB',       color: c.red    },
-              { title: '"Usuários acessam documentos que não deveriam."',        desc: 'Bernardo · Inviolável, sistema SOC/SIEM próprio',   color: c.yellow },
-              { title: '"Contato com paciente pelo próprio WhatsApp pessoal."',  desc: 'Lucas Nylan, Médico · usuário do Amplimed',         color: c.yellow },
+              { title: '"Documento no WhatsApp — se apagar, já era."',          desc: 'Administradora · Corretora de Seguros, PB',         color: c.red    },
+              { title: '"Usuários acessam documentos que não deveriam."',        desc: 'Gestor de TI · Empresa de Segurança, SP',           color: c.yellow },
+              { title: '"Contato com paciente pelo próprio WhatsApp pessoal."',  desc: 'Médico · Clínica Particular, SC',                   color: c.yellow },
             ].map((q, i) => (
               <div key={q.title} data-reveal data-d={String(i + 1)} style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 6, padding: 24, borderLeft: `3px solid ${q.color}`, boxShadow: sh.s1 }}>
                 <p style={{ fontSize: 15, fontWeight: 600, color: c.text, marginBottom: 8, lineHeight: 1.4 }}>{q.title}</p>
@@ -296,6 +341,134 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── LGPD DATA ── */}
+      <section style={{ padding: '80px 5%', background: c.base, transition: 'background-color 0.32s ease' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          <p data-reveal style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.5, color: c.blue5, marginBottom: 12 }}>O mercado</p>
+          <h2 data-reveal data-d="1" style={{ fontSize: 'clamp(22px,3.5vw,44px)', fontWeight: 800, letterSpacing: -1, marginBottom: 12, lineHeight: 1.2, color: c.text }}>
+            PMEs brasileiras e a LGPD
+          </h2>
+          <p data-reveal data-d="2" style={{ color: c.textSub, fontSize: 16, maxWidth: 600, marginBottom: 48, lineHeight: 1.7 }}>
+            5 anos após a lei entrar em vigor — pesquisa Sebrae 2025
+          </p>
+
+          {/* Cards */}
+          <div data-reveal data-d="3" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 16, marginBottom: 24 }}>
+            {lgpdCards.map(card => (
+              <div key={card.value} style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 12, overflow: 'hidden', borderTop: `3px solid ${card.accent}`, boxShadow: sh.s1 }}>
+                <div style={{ padding: '28px 24px 20px' }}>
+                  <div style={{ fontSize: 'clamp(52px,6vw,72px)', fontWeight: 900, color: card.accent, letterSpacing: '-3px', lineHeight: 1, marginBottom: 14 }}>
+                    {card.value}
+                  </div>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: c.text, marginBottom: 2 }}>{card.line1}</p>
+                  <p style={{ fontSize: 15, color: c.textSub }}>{card.line2}</p>
+                </div>
+                <div style={{ padding: '10px 24px', background: card.footerAlpha, fontSize: 12, fontWeight: 700, color: card.accent }}>
+                  {card.footer}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Highlight box */}
+          <div data-reveal data-d="4" style={{ background: isDark ? '#0B1929' : '#EBF3FF', border: `1px solid ${isDark ? 'rgba(47,128,237,0.2)' : 'rgba(47,128,237,0.35)'}`, borderRadius: 10, padding: '20px 24px', marginBottom: 20 }}>
+            <p style={{ fontSize: 17, fontWeight: 700, color: c.text, marginBottom: 4 }}>
+              77% das PMEs brasileiras estão expostas — e nem sabem
+            </p>
+            <p style={{ fontSize: 14, color: c.textSub }}>
+              Esse é o tamanho real do mercado que ninguém está servindo direito.
+            </p>
+          </div>
+
+          <p style={{ fontSize: 11, color: c.textFaint }}>
+            Fonte: Sebrae — Pesquisa &ldquo;Maturidade em Privacidade nos Pequenos Negócios&rdquo; (2025)
+          </p>
+        </div>
+      </section>
+
+      {/* ── MARKET CHART ── */}
+      <section style={{ padding: '80px 5%', background: c.surface, borderTop: `1px solid ${c.border}`, borderBottom: `1px solid ${c.border}`, transition: 'background-color 0.32s ease' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          {/* Header + badge */}
+          <div data-reveal style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, marginBottom: 48 }}>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.5, color: c.blue5, marginBottom: 12 }}>Oportunidade</p>
+              <h2 style={{ fontSize: 'clamp(22px,3.5vw,44px)', fontWeight: 800, letterSpacing: -1, marginBottom: 10, lineHeight: 1.2, color: c.text }}>
+                Mercado global de governança de dados
+              </h2>
+              <p style={{ color: c.textSub, fontSize: 16, lineHeight: 1.6 }}>Projeção 2025 → 2035 (em US$ bilhões)</p>
+            </div>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, padding: '7px 16px', borderRadius: 20, background: 'rgba(47,128,237,0.12)', color: c.blue4, border: `1px solid rgba(47,128,237,0.25)`, whiteSpace: 'nowrap', flexShrink: 0 }}>
+              ↗&nbsp;CAGR 21,2% a.a.
+            </span>
+          </div>
+
+          {/* Chart */}
+          <div data-reveal data-d="1" style={{ height: 280, width: '100%', marginBottom: 16 }}>
+            {chartMounted && (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={marketData} margin={{ top: 10, right: 16, left: -10, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="marketGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%"   stopColor="#2F80ED" stopOpacity={isDark ? 0.35 : 0.18} />
+                      <stop offset="100%" stopColor="#2F80ED" stopOpacity={0.02} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={c.border} vertical={false} />
+                  <XAxis
+                    dataKey="year"
+                    tick={{ fill: c.textSub, fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                    ticks={['2025', '2028', '2031', '2035']}
+                  />
+                  <YAxis
+                    tick={{ fill: c.textSub, fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                    domain={[0, 40]}
+                    ticks={[0, 10, 20, 30, 40]}
+                  />
+                  <Tooltip content={<MarketTooltip c={c} />} cursor={{ stroke: c.borderHard, strokeWidth: 1 }} />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#2F80ED"
+                    strokeWidth={2.5}
+                    fill="url(#marketGrad)"
+                    dot={false}
+                    activeDot={{ r: 5, fill: '#5BA3F5', stroke: c.surface, strokeWidth: 2 }}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          {/* Endpoint labels */}
+          <div data-reveal data-d="2" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 28, padding: '0 4px' }}>
+            <div style={{ fontSize: 13 }}>
+              <span style={{ color: c.textSub }}>2025 · </span>
+              <span style={{ fontWeight: 700, color: c.blue4 }}>US$ 5,6 bi</span>
+            </div>
+            <div style={{ fontSize: 13, textAlign: 'right' }}>
+              <span style={{ color: c.textSub }}>2035 · </span>
+              <span style={{ fontWeight: 700, color: c.blue4 }}>US$ 38,3 bi</span>
+            </div>
+          </div>
+
+          {/* Highlight box */}
+          <div data-reveal data-d="3" style={{ background: isDark ? '#0B1929' : '#EBF3FF', border: `1px solid ${isDark ? 'rgba(47,128,237,0.2)' : 'rgba(47,128,237,0.35)'}`, borderRadius: 10, padding: '20px 24px', marginBottom: 20 }}>
+            <p style={{ fontSize: 16, fontWeight: 700, color: c.text }}>
+              Mercado vai crescer <span style={{ color: c.blue4 }}>6,8×</span> em 10 anos — estamos entrando na hora certa.
+            </p>
+          </div>
+
+          <p style={{ fontSize: 11, color: c.textFaint }}>
+            Fonte: Research Nester — Data Governance Market Report (2025)
+          </p>
         </div>
       </section>
 
@@ -314,10 +487,8 @@ export default function Home() {
             {[
               { title: 'Zero-Knowledge',      desc: 'Criptografia AES-256 no seu dispositivo antes de subir para a nuvem. Nem a Zênite pode ler seus arquivos.', color: c.cyan   },
               { title: 'Auditoria LGPD',       desc: 'Trilha imutável de todas as ações. Exporta relatório pronto para a ANPD em um clique, sem advogado.',        color: c.blue5  },
-              { title: 'Classificação por IA', desc: 'Detecta CPF, dados financeiros e sensíveis no upload automático. Você sabe onde cada dado está.',             color: c.yellow },
               { title: 'Controle de Acessos',  desc: 'Admin, Colaborador, Viewer. Permissões por pasta. Bloqueio imediato de ex-funcionários.',                     color: c.purple },
               { title: 'Anti-Ransomware',       desc: 'Detecta e bloqueia downloads em massa suspeitos antes que o ataque se consolide.',                            color: c.red    },
-              { title: 'Offline + Nuvem',       desc: 'Opera local quando sem internet. Sincroniza automaticamente quando a conexão volta.',                         color: c.green  },
             ].map((f, i) => (
               <div key={f.title} data-reveal data-d={String((i % 3) + 1)}
                 style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 6, padding: 24, borderTop: `3px solid ${f.color}`, transition: 'transform 0.15s, box-shadow 0.15s', boxShadow: sh.s1 }}
@@ -438,6 +609,10 @@ export default function Home() {
         <div style={{ fontSize: 12, color: c.textFaint }}>
           Startup Weekend Cybersecurity Chapecó 2026 · Protegendo PMEs brasileiras · LGPD-ready
         </div>
+        <a href="https://wa.link/3y9fsd" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, color: c.green, fontSize: 12, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.123 1.522 5.855L0 24l6.335-1.492A11.941 11.941 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.374l-.36-.214-3.724.877.944-3.618-.235-.372A9.817 9.817 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+          Fale conosco
+        </a>
       </footer>
     </>
   );

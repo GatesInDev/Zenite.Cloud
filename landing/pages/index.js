@@ -488,7 +488,6 @@ export default function Home() {
               { title: 'Zero-Knowledge',      desc: 'Criptografia AES-256 no seu dispositivo antes de subir para a nuvem. Nem a Zênite pode ler seus arquivos.', color: c.cyan   },
               { title: 'Auditoria LGPD',       desc: 'Trilha imutável de todas as ações. Exporta relatório pronto para a ANPD em um clique, sem advogado.',        color: c.blue5  },
               { title: 'Controle de Acessos',  desc: 'Admin, Colaborador, Viewer. Permissões por pasta. Bloqueio imediato de ex-funcionários.',                     color: c.purple },
-              { title: 'Anti-Ransomware',       desc: 'Detecta e bloqueia downloads em massa suspeitos antes que o ataque se consolide.',                            color: c.red    },
             ].map((f, i) => (
               <div key={f.title} data-reveal data-d={String((i % 3) + 1)}
                 style={{ background: c.card, border: `1px solid ${c.border}`, borderRadius: 6, padding: 24, borderTop: `3px solid ${f.color}`, transition: 'transform 0.15s, box-shadow 0.15s', boxShadow: sh.s1 }}
